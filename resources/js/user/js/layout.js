@@ -1,0 +1,18 @@
+export const logout = async (_this) => {
+    const res = await _this.$post('/api/logout')
+    if (res.data?.success) {
+        _this.$success(res.data.message)
+        _this.removeToken()
+        _this.$router.push('/login')
+    }
+    if (res.errors?.error) {
+        _this.$success(res.data.message)
+        _this.removeToken()
+        _this.$error(res.errors?.error)
+    }
+}
+
+export const changeTheme = (_this) => {
+    let theme = _this.getTheme === 'dark' ? 'light' : 'dark'
+    _this.setTheme(theme)
+}

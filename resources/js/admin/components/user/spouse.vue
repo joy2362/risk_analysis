@@ -1,53 +1,61 @@
 <template>
     <v-card-text>
         <v-checkbox
+            v-model="singleData.spouse_is_alive"
             label="Alive"
-            v-model="singleData.spouse.is_alive"
+            @change="checkAlive"
+            :error="!!errors.spouse_is_alive"
+            :error-messages="errors.spouse_is_alive"
         ></v-checkbox>
-        <v-text-field
-            v-model="singleData.spouse.name"
-            label="Name"
-        ></v-text-field>
-        <v-text-field
-            v-model="singleData.spouse.dob"
-            label="DOB"
-            type="date"
-        ></v-text-field>
-        <v-select
-            v-model="singleData.spouse.gender"
-            :items="getGender"
-            item-title="name"
-            item-value="value"
-            label="Gender"
-            variant="solo"
-        ></v-select>
-        <v-text-field
-            v-model="singleData.spouse.nid_number"
-            label="NID number"
-            type="text"
-        ></v-text-field>
-        <v-select
-            v-model="singleData.spouse.education"
-            :items="getEducation"
-            item-title="name"
-            item-value="value"
-            label="Education"
-            variant="solo"
-        ></v-select>
-        <v-select
-            v-model="singleData.spouse.profession"
-            :items="getProfession"
-            item-title="name"
-            item-value="value"
-            label="Profession"
-            variant="solo"
-        ></v-select>
-        <v-text-field
-            v-model="singleData.spouse.income"
-            label="Income"
-            type="number"
-        ></v-text-field>
-
+        <div v-if="singleData.spouse_is_alive">
+            <v-text-field
+                v-model="singleData.spouse_name"
+                label="Name"
+                :error="!!errors.spouse_name"
+                :error-messages="errors.spouse_name"
+            ></v-text-field>
+            <v-text-field
+                v-model="singleData.spouse_dob"
+                label="DOB"
+                type="date"
+                :error="!!errors.spouse_dob"
+                :error-messages="errors.spouse_dob"
+            ></v-text-field>
+            <v-text-field
+                v-model="singleData.spouse_nid_number"
+                label="NID number"
+                type="text"
+                :error="!!errors.spouse_nid_number"
+                :error-messages="errors.spouse_nid_number"
+            ></v-text-field>
+            <v-select
+                v-model="singleData.spouse_education"
+                :items="getEducation"
+                item-title="name"
+                item-value="value"
+                label="Education"
+                variant="solo"
+                :error="!!errors.spouse_education"
+                :error-messages="errors.spouse_education"
+            ></v-select>
+            <v-select
+                v-model="singleData.spouse_profession"
+                :items="getProfession"
+                item-title="name"
+                item-value="value"
+                label="Profession"
+                variant="solo"
+                :error="!!errors.spouse_profession"
+                :error-messages="errors.spouse_profession"
+            ></v-select>
+            <v-text-field
+                v-model="singleData.spouse_income"
+                label="Income"
+                type="number"
+                :error="!!errors.spouse_income"
+                :error-messages="errors.spouse_income"
+            ></v-text-field>
+        </div>
     </v-card-text>
 </template>
 <script>
@@ -58,11 +66,23 @@ export default {
     name: "user_spouse",
     computed: {
         ...mapState(useUserStore, {
-            getGender: 'getGender', getEducation: 'getEducation', getProfession: 'getProfession'
+            getEducation: 'getEducation', getProfession: 'getProfession'
         }),
         ...mapWritableState(useUserStore, {
             singleData: 'singleData', errors: 'errors',
         }),
     },
+    methods: {
+        checkAlive() {
+            if (!this.singleData.spouse_is_alive) {
+                this.singleData.spouse_name = '';
+                this.singleData.spouse_dob = '';
+                this.singleData.spouse_nid_number = '';
+                this.singleData.spouse_income = 0;
+                this.singleData.spouse_profession = '';
+                this.singleData.spouse_education = '';
+            }
+        }
+    }
 }
 </script>

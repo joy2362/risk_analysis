@@ -2,14 +2,7 @@
 
 namespace App\Models\Users;
 
-use App\Models\Child;
-use App\Models\Member;
-use App\Models\Residence;
-use App\Models\Spouse;
-use App\Models\UserOtherInfo;
-use App\Models\UserParent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -35,9 +28,26 @@ class User extends Authenticatable
         'income',
         'profession',
         'education',
-        'gender',
         "avatar",
-        "score"
+        "score",
+        "parent_is_alive",
+        "parent_available",
+        "parent_profession",
+        "spouse_is_alive",
+        "spouse_name",
+        "spouse_dob",
+        "spouse_nid_number",
+        "spouse_income",
+        "spouse_profession",
+        "spouse_education",
+        "no_of_child",
+        "children_profession",
+        "own_house",
+        "total_land",
+        "house_made_of",
+        "other_earning_member",
+        "other_member_have_bank_account",
+        "status",
     ];
 
     /**
@@ -59,41 +69,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getAvatarAttribute($value)
+    public function getAvatarAttribute($value): ?string
     {
         if (!empty($value)) {
             return Storage::url($value);
         }
         return null;
-    }
-
-    public function child(): HasOne
-    {
-        return $this->hasOne(Child::class);
-    }
-
-    public function residence(): HasOne
-    {
-        return $this->hasOne(Residence::class);
-    }
-
-    public function other(): HasOne
-    {
-        return $this->hasOne(UserOtherInfo::class);
-    }
-
-    public function member(): HasOne
-    {
-        return $this->hasOne(Member::class);
-    }
-
-    public function spouse(): HasOne
-    {
-        return $this->hasOne(Spouse::class);
-    }
-
-    public function parent(): HasOne
-    {
-        return $this->hasOne(UserParent::class);
     }
 }

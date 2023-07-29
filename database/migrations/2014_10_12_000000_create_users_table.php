@@ -21,11 +21,34 @@ return new class () extends Migration {
             $table->string('income');
             $table->string('profession');
             $table->string('education');
-            $table->enum('gender', ['male', 'female']);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->unsignedInteger('score')->default(0);
+
+            $table->boolean('parent_is_alive')->default(false);
+            $table->boolean('parent_available')->nullable();
+            $table->string('parent_profession')->nullable();
+
+            $table->boolean('spouse_is_alive')->default(false);
+            $table->string('spouse_name')->nullable();
+            $table->string('spouse_dob')->nullable();
+            $table->string('spouse_nid_number')->nullable();
+            $table->string('spouse_income')->nullable();
+            $table->string('spouse_profession')->nullable();
+            $table->string('spouse_education')->nullable();
+
+            $table->unsignedInteger('no_of_child')->default(0);
+            $table->string('children_profession')->nullable();
+
+            $table->boolean('own_house')->default(true);
+            $table->unsignedInteger('total_land')->default(0);
+            $table->string('house_made_of');
+
+            $table->boolean('other_earning_member')->default(true);
+            $table->boolean('other_member_have_bank_account')->default(true);
+            $table->string('status')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

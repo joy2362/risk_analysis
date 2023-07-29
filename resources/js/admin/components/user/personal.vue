@@ -34,16 +34,6 @@
             type="text"
         ></v-text-field>
         <v-select
-            v-model="singleData.gender"
-            :error="!!errors.gender"
-            :error-messages="errors.gender"
-            :items="getGender"
-            item-title="name"
-            item-value="value"
-            label="Gender"
-            variant="solo"
-        ></v-select>
-        <v-select
             v-model="singleData.education"
             :error="!!errors.education"
             :error-messages="errors.education"
@@ -91,7 +81,7 @@ export default {
     name: "user_personal",
     computed: {
         ...mapState(useUserStore, {
-            getGender: 'getGender', getEducation: 'getEducation', getProfession: 'getProfession'
+            getEducation: 'getEducation', getProfession: 'getProfession'
         }),
         ...mapWritableState(useUserStore, {
             singleData: 'singleData', errors: 'errors',

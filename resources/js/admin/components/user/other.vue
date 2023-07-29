@@ -1,12 +1,16 @@
 <template>
     <v-card-text>
         <v-checkbox
-            v-model="singleData.other.other_earning_member"
+            v-model="singleData.other_earning_member"
             label="Is there any others earning member of the family"
+            :error="!!errors.other_earning_member"
+            :error-messages="errors.other_earning_member"
         ></v-checkbox>
         <v-checkbox
-            v-model="singleData.other.other_member_have_bank_account"
+            v-model="singleData.other_member_have_bank_account"
             label="Is there any other member are already member of the Bank"
+            :error="!!errors.other_member_have_bank_account"
+            :error-messages="errors.other_member_have_bank_account"
         ></v-checkbox>
     </v-card-text>
 </template>

@@ -45,52 +45,25 @@ class UserService
     public function store(Request $request): Collection
     {
         try {
-            DB::beginTransaction();
-            $userData = $request->only(['name', 'email', 'dob', 'nid_number', 'income', 'profession', 'education', 'gender',]);
+            $userData = $request->except(['password', 'avatar']);
             $userData['password'] = Hash::make($request->password);
+
             if ($request->hasFile('avatar')) {
                 $userData['avatar'] = upload($request->avatar, '/user/avatar/');
             }
+
+            $userData['parent_is_alive'] = (boolean)$request->parent_is_alive;
+            $userData['spouse_is_alive'] = (boolean)$request->spouse_is_alive;
+            $userData['other_earning_member'] = (boolean)$request->other_earning_member;
+            $userData['other_member_have_bank_account'] = (boolean)$request->other_member_have_bank_account;
+            $userData['own_house'] = (boolean)$request->own_house;
+            $userData['parent_available'] = (boolean)$request->parent_available;
+
             $user = User::create($userData);
 
-            if (!empty($request->spouse)) {
-                $spouseData = $request->only(['spouse']);
-                $spouseData['spouse']['is_alive'] = (boolean)$request->spouse['is_alive'];
-                $user->spouse()->create($spouseData['spouse']);
-            }
-
-            if (!empty($request->other)) {
-                $otherData = $request->only(['other']);
-                $otherData['other']['other_earning_member'] = (boolean)$request->other['other_earning_member'];
-                $otherData['other']['other_member_have_bank_account'] = (boolean)$request->other['other_member_have_bank_account'];
-                $user->other()->create($otherData['other']);
-            }
-
-            if (!empty($request->residence)) {
-                $residenceData = $request->only(['residence']);
-                $residenceData['residence']['own_house'] = (boolean)$request->residence['own_house'];
-                $user->residence()->create($residenceData['residence']);
-            }
-
-            if (!empty($request->parent)) {
-                $parentData = $request->only(['parent']);
-                $parentData['parent']['is_alive'] = (boolean)$request->parent['is_alive'];
-                $parentData['parent']['available'] = (boolean)$request->parent['available'];
-                $user->parent()->create($parentData['parent']);
-            }
-            if (!empty($request->member)) {
-                $memberData = $request->only(['member']);
-                $user->member()->create($memberData['member']);
-            }
-            if (!empty($request->child)) {
-                $childData = $request->only(['child']);
-                $user->child()->create($childData['child']);
-            }
             $this->calculateScore($user);
-            DB::commit();
             $this->collection = $this->success(['message' => 'User created']);
         } catch (Exception $ex) {
-            DB::rollBack();
             $this->collection = $this->failed(['errors' => $ex->getMessage()]);
         }
 
@@ -115,43 +88,71 @@ class UserService
 
     private function calculateScore($user): void
     {
-        $user->load('spouse', 'child', 'parent', 'member', 'other', 'residence');
-
-        $userScore = $this->calculateSpouseScore($user);
-        $spouseScore = $user->spouse ? $this->calculateSpouseScore($user->spouse, true) : 0;
-        $childScore = $user->child ? $this->calculateChildScore($user->child) : 0;
-        $parentScore = $user->parent ? $this->calculateParentScore($user->parent) : 0;
-        $memberScore = $user->member ? $this->calculateMemberScore($user->member) : 0;
-        $otherScore = $user->other ? $this->calculateOtherScore($user->other) : 0;
-        $residenceScore = $user->residence ? $this->calculateResidenceScore($user->residence) : 0;
-        $total = $userScore + $spouseScore + $childScore + $parentScore + $memberScore + $otherScore + $residenceScore;
-        $user->score = $total;
+        $total = $this->calculateUserScore($user) + $this->calculateParentScore($user) + $this->calculateSpouseScore($user) + $this->calculateChildScore($user) + $this->calculateOtherScore($user) + $this->calculateResidenceScore($user);
+        if ($total > 69 && $total <= 100) {
+            $status = 'Accept';
+        } elseif ($total <= 69 && $total >= 50) {
+            $status = 'Conditionally accept';
+        } else {
+            $status = 'Reject';
+        }
         $user->update([
-            'score' => $total
+            'score' => $total,
+            'status' => $status,
         ]);
     }
 
-    private function calculateSpouseScore($spouse, $requiredCheckAlive = false): float|int
+    private function calculateSpouseScore($user): int
+    {
+        return $user->spouse_is_alive ? $this->getScoreSpouse($user) : 15;
+    }
+
+    private function calculateUserScore($user): int
+    {
+        $total = 0;
+        match ($user->profession) {
+            MemberProfessionEnum::HomeMaker->value => $total += 4,
+            MemberProfessionEnum::JobHolder->value => $total += 5,
+            default => $total += 0,
+        };
+
+        if ($user->income == 0) {
+            $total += 3;
+        } elseif ($user->income > 0 && $user->income < 5000) {
+            $total += 4;
+        } else {
+            $total += 5;
+        }
+
+        match ($user->education) {
+            UserEducationEnum::NoEducation->value, UserEducationEnum::SSCPass->value, UserEducationEnum::PassPSC->value, UserEducationEnum::PassJSC->value, UserEducationEnum::HSCPass->value => $total += 4,
+            UserEducationEnum::Graduation->value, UserEducationEnum::PostGraduation->value => $total += 5,
+            default => $total += 0,
+        };
+        return $total;
+    }
+
+    private function getScoreSpouse($user): int
     {
         $total = 0;
 
-        if ($spouse->income == 0) {
+        if ($user->spouse_income == 0) {
             $total += 3;
-        } elseif ($spouse->income > 0 && $spouse->income < 5000) {
+        } elseif ($user->spouse_income > 0 && $user->spouse_income < 5000) {
             $total += 4;
-        } elseif ($spouse->income >= 5000 && $spouse->income < 10000) {
+        } elseif ($user->spouse_income >= 5000 && $user->spouse_income < 10000) {
             $total += 5;
-        } elseif ($spouse->income >= 10001 && $spouse->income < 20000) {
+        } elseif ($user->spouse_income >= 10001 && $user->spouse_income < 20000) {
             $total += 6;
-        } elseif ($spouse->income >= 20001 && $spouse->income < 30000) {
+        } elseif ($user->spouse_income >= 20001 && $user->spouse_income < 30000) {
             $total += 7;
-        } elseif ($spouse->income >= 30001 && $spouse->income < 40000) {
+        } elseif ($user->spouse_income >= 30001 && $user->spouse_income < 40000) {
             $total += 8;
         } else {
             $total += 10;
         }
 
-        match ($spouse->profession) {
+        match ($user->spouse_profession) {
             UserProfessionEnum::Business->value => $total += 9,
             UserProfessionEnum::RickshawPuller->value => $total += 7,
             UserProfessionEnum::WantedToGoAbroad->value => $total += 3,
@@ -161,7 +162,7 @@ class UserService
             default => $total += 0,
         };
 
-        match ($spouse->education) {
+        match ($user->spouse_education) {
             UserEducationEnum::NoEducation->value, UserEducationEnum::SSCPass->value => $total += 7,
             UserEducationEnum::PassPSC->value => $total += 6,
             UserEducationEnum::PassJSC->value => $total += 5,
@@ -171,95 +172,81 @@ class UserService
             default => $total += 0,
         };
 
-        return ($requiredCheckAlive && !$spouse->is_alive) ? $total / 2 : $total;
+        return $total;
     }
 
-    private function calculateChildScore($child): int
+    private function calculateChildScore($user): int
+    {
+        return $user->no_of_child == 0 ? 5 : $this->getScoreChild($user);
+    }
+
+    private function getScoreChild($user): int
     {
         $total = 0;
-        match ($child->no_of_child) {
-            0, 1 => $total += 5,
+        match ($user->no_of_child) {
+            1 => $total += 5,
             2 => $total += 4,
             3 => $total += 3,
             default => $total += 1,
         };
-        if ($child->no_of_child > 0) {
-            match ($child->profession) {
-                ChildProfessionEnum::AgeLessThan5Years->value => $total += 2,
-                ChildProfessionEnum::StudentClass1To5->value => $total += 3,
-                ChildProfessionEnum::StudentClass6ToHigh->value, ChildProfessionEnum::JobHolder->value => $total += 5,
-                default => $total += 0,
-            };
-        }
+
+        match ($user->children_profession) {
+            ChildProfessionEnum::AgeLessThan5Years->value => $total += 2,
+            ChildProfessionEnum::StudentClass1To5->value => $total += 3,
+            ChildProfessionEnum::StudentClass6ToHigh->value, ChildProfessionEnum::JobHolder->value => $total += 5,
+            default => $total += 0,
+        };
+
         return $total;
     }
 
-    private function calculateParentScore($parent): float|int
+    private function calculateParentScore($user): float|int
+    {
+        return $user->parent_is_alive ? $this->getScoreParent($user) : 8;
+
+    }
+
+    private function getScoreParent($user): int
     {
         $total = 0;
-        $total += $parent->available ? 10 : 5;
+        $total += $user->available ? 10 : 5;
 
-        match ($parent->profession) {
+        match ($user->profession) {
             ParentProfessionEnum::Farming->value => $total += 4,
             ParentProfessionEnum::JobHolder->value => $total += 5,
             ParentProfessionEnum::MoreThan55Years->value => $total += 3,
             default => $total += 0,
         };
-        return $parent->is_alive ? $total : $total / 2;
-    }
-
-    private function calculateMemberScore($member): int
-    {
-        $total = 0;
-        match ($member->profession) {
-            MemberProfessionEnum::HomeMaker->value => $total += 4,
-            MemberProfessionEnum::JobHolder->value => $total += 5,
-            default => $total += 0,
-        };
-
-        if ($member->income == 0) {
-            $total += 3;
-        } elseif ($member->income > 0 && $member->income < 5000) {
-            $total += 4;
-        } else {
-            $total += 5;
-        }
-
-        match ($member->education) {
-            UserEducationEnum::NoEducation->value, UserEducationEnum::SSCPass->value, UserEducationEnum::PassPSC->value, UserEducationEnum::PassJSC->value, UserEducationEnum::HSCPass->value => $total += 4,
-            UserEducationEnum::Graduation->value, UserEducationEnum::PostGraduation->value => $total += 5,
-            default => $total += 0,
-        };
         return $total;
     }
 
-    private function calculateOtherScore($other): int
+    private function calculateOtherScore($user): int
     {
         $total = 0;
-        $total += $other->other_earning_member ? 5 : 3;
-        $total += $other->other_member_have_bank_account ? 5 : 3;
+        $total += $user->other_earning_member ? 5 : 3;
+        $total += $user->other_member_have_bank_account ? 5 : 3;
         return $total;
     }
 
-    private function calculateResidenceScore($residence): int
+    private function calculateResidenceScore($user): int
     {
         $total = 0;
-        $total += $residence->own_house ? 5 : 3;
-        if ($residence->total_land >= 0 && $residence->total_land <= 4) {
+        $total += $user->own_house ? 5 : 3;
+        if ($user->total_land >= 0 && $user->total_land <= 4) {
             $total += 3;
-        } elseif ($residence->total_land >= 5 && $residence->total_land <= 10) {
+        } elseif ($user->total_land >= 5 && $user->total_land <= 10) {
             $total += 4;
-        } elseif ($residence->total_land >= 11 && $residence->total_land <= 20) {
+        } elseif ($user->total_land >= 11 && $user->total_land <= 20) {
             $total += 5;
-        } elseif ($residence->total_land >= 21 && $residence->total_land <= 40) {
+        } elseif ($user->total_land >= 21 && $user->total_land <= 40) {
             $total += 6;
-        } elseif ($residence->total_land >= 41 && $residence->total_land <= 60) {
+        } elseif ($user->total_land >= 41 && $user->total_land <= 60) {
             $total += 7;
         } else {
             $total += 9;
         }
 
-        match ($residence->house_made_of) {
+        match ($user->house_made_of) {
             HomeMaterialEnum::OnlyTin->value => $total += 3,
             HomeMaterialEnum::TinAndConcrete->value => $total += 4,
             HomeMaterialEnum::Building->value => $total += 6,

@@ -1,20 +1,20 @@
 <template>
-  <v-footer>
-    <v-row justify="center" no-gutters>
-      Make with
-      <v-icon color="red-darken-2">mdi-heart</v-icon>
-      <span>
-        by <b> Abdullah zahid</b>
+    <v-footer>
+        <v-row justify="center" no-gutters>
+            Make with
+            <v-icon color="red-darken-2">mdi-heart</v-icon>
+            <span>
+        by <b> Md. Alamgir Hossain</b>
       </span>
-      <v-spacer></v-spacer>
-      &copy; Risk analysis 2023
-    </v-row>
-  </v-footer>
+            <v-spacer></v-spacer>
+            &copy; Risk analysis 2023
+        </v-row>
+    </v-footer>
 </template>
 
 <script>
 export default {
-  name: 'FooterSection'
+    name: 'FooterSection'
 }
 </script>
 

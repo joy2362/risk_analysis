@@ -29,12 +29,9 @@
                     <user_child></user_child>
                 </v-window-item>
                 <v-window-item :value="4">
-                    <user_member></user_member>
-                </v-window-item>
-                <v-window-item :value="5">
                     <user_residence></user_residence>
                 </v-window-item>
-                <v-window-item :value="6">
+                <v-window-item :value="5">
                     <user_other></user_other>
                 </v-window-item>
             </v-window>
@@ -51,7 +48,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    v-if="step < 6"
+                    v-if="step < 5"
                     color="primary"
                     variant="flat"
                     @click="step++"
@@ -86,14 +83,12 @@ import {createUser} from "../../js/user";
 import User_other from "../../components/user/other.vue";
 import User_residence from "../../components/user/residence.vue";
 import User_parent from "../../components/user/parent.vue";
-import User_member from "../../components/user/member.vue";
 import User_child from "../../components/user/child.vue";
 
 export default {
     name: 'admin.user.store',
     components: {
         User_child,
-        User_member,
         User_parent,
         User_residence, User_other, FooterSection, User_spouse, User_personal, TitleBar, BreadCrumb
     },
@@ -101,8 +96,9 @@ export default {
         ...mapActions(useUserStore, {
             setBradCrumb: 'setBradCrumb',
             setPermissions: 'setPermissions',
-            setSingleData: 'setSingleData',
+            resetSingleData: 'resetSingleData',
             setAvatar: 'setAvatar',
+
         }),
         ...mapActions(useGlobalStore, {setGlobalLoading: 'setGlobalLoading'}),
         onSelect(event) {
@@ -119,8 +115,7 @@ export default {
             getRoutes: 'getRoutes',
             getApiRoutes: 'getApiRoutes',
             getSingleData: 'getSingleData',
-            getStepTitle: 'getStepTitle',
-            getGender: 'getGender',
+            getStepTitle: 'getStepTitle'
         }),
         ...mapWritableState(useUserStore, {
             singleData: 'singleData', errors: 'errors', step: 'step'

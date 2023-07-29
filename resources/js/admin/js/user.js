@@ -14,40 +14,13 @@ export const createUser = async (_this) => {
 
     // Append other form fields
     Object.entries(_this.getSingleData).forEach(([key, value]) => {
-
-        if (key === 'spouse') {
-            Object.entries(_this.getSingleData.spouse).forEach(([key, value]) => {
-                payload.append(`spouse[${key}]`, value);
-            });
-        } else if (key === 'parent') {
-            Object.entries(_this.getSingleData.parent).forEach(([key, value]) => {
-                payload.append(`parent[${key}]`, value);
-            });
-        } else if (key === 'residence') {
-            Object.entries(_this.getSingleData.residence).forEach(([key, value]) => {
-                payload.append(`residence[${key}]`, value);
-            });
-        } else if (key === 'child') {
-            Object.entries(_this.getSingleData.child).forEach(([key, value]) => {
-                payload.append(`child[${key}]`, value);
-            });
-        } else if (key === 'member') {
-            Object.entries(_this.getSingleData.member).forEach(([key, value]) => {
-                payload.append(`member[${key}]`, value);
-            });
-        } else if (key === 'other') {
-            Object.entries(_this.getSingleData.other).forEach(([key, value]) => {
-                payload.append(`other[${key}]`, value);
-            });
-        } else {
-            payload.append(key, value);
-        }
+        payload.append(key, value);
     });
 
     const res = await _this.$post(_this.getApiRoutes.create, payload)
     if (res.data?.success) {
         _this.$success(res.data.message)
-        // _this.setSingleData({avatar: '', name: '', email: '', password: ''})
+         _this.resetSingleData()
         _this.$router.push('/admin/user')
     }
     if (res.errors?.error) {

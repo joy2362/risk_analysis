@@ -12,11 +12,6 @@ export const useUserStore = defineStore('user', {
                     sortable: true,
                 },
                 {
-                    label: 'Gender',
-                    field: 'gender',
-                    sortable: true,
-                },
-                {
                     label: 'Email',
                     field: 'email',
                     sortable: true,
@@ -34,6 +29,11 @@ export const useUserStore = defineStore('user', {
                 {
                     label: 'Profession',
                     field: 'profession',
+                    sortable: true,
+                },
+                {
+                    label: 'Status',
+                    field: 'status',
                     sortable: true,
                 },
             ],
@@ -67,56 +67,32 @@ export const useUserStore = defineStore('user', {
                 education: '',
                 profession: '',
                 income: 0,
-                gender: 'female',
-                spouse: {
-                    name: '',
-                    is_alive: true,
-                    dob: '',
-                    nid_number: '',
-                    education: '',
-                    profession: '',
-                    income: 0,
-                    gender: 'male'
-                },
-                other: {
-                    other_member_have_bank_account: true,
-                    other_earning_member: true,
-                },
-                residence: {
-                    own_house: true,
-                    total_land: 0,
-                    house_made_of: '',
-                },
-                parent: {
-                    is_alive: true,
-                    available: 0,
-                    profession: '',
-                },
-                member: {
-                    name: '',
-                    dob: '',
-                    nid_number: '',
-                    education: '',
-                    profession: '',
-                    income: 0,
-                    gender: 'male'
-                },
-                child:{
-                    no_of_child: 1,
-                    profession: '',
-                }
+
+                parent_is_alive: true,
+                parent_available: 0,
+                parent_profession: '',
+
+                spouse_is_alive: true,
+                spouse_name: '',
+                spouse_dob: '',
+                spouse_nid_number: '',
+                spouse_income: 0,
+                spouse_profession: '',
+                spouse_education: '',
+
+                no_of_child: 0,
+                children_profession: '',
+
+                own_house: true,
+                total_land: 0,
+                house_made_of: '',
+
+                other_earning_member: true,
+                other_member_have_bank_account: true,
             },
-            step: 0,
+            step: 6,
             step_title: [
-                'Personal', 'Spouse', 'Parent', 'Child', 'Member', 'Residence', 'Other'
-            ],
-            gender: [
-                {
-                    name: 'Male', value: "male"
-                },
-                {
-                    name: 'Female', value: "female"
-                },
+                'Personal', 'Spouse', 'Parent', 'Child', 'Residence', 'Other'
             ],
             education: [
                 {
@@ -267,9 +243,6 @@ export const useUserStore = defineStore('user', {
         getStepTitle(state) {
             return state.step_title
         },
-        getGender(state) {
-            return state.gender
-        },
         getEducation(state) {
             return state.education
         },
@@ -294,8 +267,43 @@ export const useUserStore = defineStore('user', {
             this.data = role.data
             this.total = role.total
         },
-        setSingleData(data) {
-            this.singleData = data
+        resetSingleData() {
+            this.singleData = {
+                name: '',
+                email: '',
+                password: '',
+                avatar: '',
+                dob: '',
+                nid_number: '',
+                education: '',
+                profession: '',
+                income: 0,
+
+                parent_is_alive: true,
+                parent_available: 0,
+                parent_profession: '',
+
+                spouse_is_alive: true,
+                spouse_name: '',
+                spouse_dob: '',
+                spouse_nid_number: '',
+                spouse_income: 0,
+                spouse_profession: '',
+                spouse_education: '',
+
+                no_of_child: 0,
+                children_profession: '',
+
+                own_house: true,
+                total_land: 0,
+                house_made_of: '',
+
+                other_earning_member: true,
+                other_member_have_bank_account: true,
+            };
+            this.step = 0;
+            this.errors = [];
+
         },
         setAvatar(payload) {
             this.singleData.avatar = payload

@@ -1,23 +1,31 @@
 <template>
     <v-card-text>
         <v-checkbox
-            v-model="singleData.parent.is_alive"
+            v-model="singleData.parent_is_alive"
             label="Is Alive"
+            @change="checkAlive"
+            :error="!!errors.parent_is_alive"
+            :error-messages="errors.parent_is_alive"
         ></v-checkbox>
 
-        <v-checkbox
-            v-model="singleData.parent.available"
-            label="Are they available"
-        ></v-checkbox>
-
-        <v-select
-            v-model="singleData.parent.profession"
-            :items="getParentProfession"
-            item-title="name"
-            item-value="value"
-            label="Profession"
-            variant="solo"
-        ></v-select>
+        <div v-if="singleData.parent_is_alive">
+            <v-checkbox
+                v-model="singleData.parent_available"
+                label="Are they available"
+                :error="!!errors.parent_available"
+                :error-messages="errors.parent_available"
+            ></v-checkbox>
+            <v-select
+                v-model="singleData.parent_profession"
+                :items="getParentProfession"
+                :error="!!errors.parent_profession"
+                :error-messages="errors.parent_profession"
+                item-title="name"
+                item-value="value"
+                label="Profession"
+                variant="solo"
+            ></v-select>
+        </div>
     </v-card-text>
 </template>
 <script>
@@ -34,5 +42,13 @@ export default {
             singleData: 'singleData', errors: 'errors',
         }),
     },
+    methods: {
+        checkAlive() {
+            if (!this.singleData.parent_is_alive) {
+                this.singleData.parent_available = 0;
+                this.singleData.parent_profession = '';
+            }
+        }
+    }
 }
 </script>

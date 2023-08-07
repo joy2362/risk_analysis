@@ -70,6 +70,44 @@ class UserService
         return $this->collection;
     }
 
+    public function show($id): Collection
+    {
+        $user = User::find($id);
+        return $this->success(['user' => $user ]);
+    }
+
+    public function update(Request $request, $id): Collection
+    {
+        try {
+            $userData = $request->except(['password', 'avatar' , '_method']);
+         
+            if(!empty($request->password)){
+                $userData['password'] = Hash::make($request->password);
+            }
+
+
+            if ($request->hasFile('avatar')) {
+                $userData['avatar'] = upload($request->avatar, '/user/avatar/');
+            }
+
+            $userData['parent_is_alive'] = (boolean)$request->parent_is_alive;
+            $userData['spouse_is_alive'] = (boolean)$request->spouse_is_alive;
+            $userData['other_earning_member'] = (boolean)$request->other_earning_member;
+            $userData['other_member_have_bank_account'] = (boolean)$request->other_member_have_bank_account;
+            $userData['own_house'] = (boolean)$request->own_house;
+            $userData['parent_available'] = (boolean)$request->parent_available;
+
+            User::where('id',$id)->update($userData);
+            $user = User::find($id);
+            $this->calculateScore($user);
+            $this->collection = $this->success(['message' => 'User updated']);
+        } catch (Exception $ex) {
+            $this->collection = $this->failed(['errors' => $ex->getMessage()]);
+        }
+
+        return $this->collection;
+    }
+
     public function destroy($id): Collection
     {
         try {

@@ -25,6 +25,22 @@ class UserController extends Controller
     {
         return ApiResponse($this->service->store($request));
     }
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id): JsonResponse
+    {
+        return ApiResponse($this->service->show($id));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UserCreateRequest $request, string $id): JsonResponse
+    {
+        return ApiResponse($this->service->update($request, $id));
+    }
+
 
     public function destroy($id): JsonResponse
     {

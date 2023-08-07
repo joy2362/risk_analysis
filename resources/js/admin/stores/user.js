@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
     state: () => {
@@ -46,12 +46,12 @@ export const useUserStore = defineStore('user', {
             ],
             routes: {
                 create: {
-                    name: 'Create User',
+                    name: 'Create Loanee',
                     to: '/admin/user/store',
                     icon: 'mdi-plus'
                 },
                 index: {
-                    name: 'All User',
+                    name: 'All Loanee',
                     to: '/admin/user',
                     icon: 'mdi-eye'
                 },
@@ -69,7 +69,7 @@ export const useUserStore = defineStore('user', {
                 income: 0,
 
                 parent_is_alive: true,
-                parent_available: 0,
+                parent_available: 'yes',
                 parent_profession: '',
 
                 spouse_is_alive: true,
@@ -210,10 +210,13 @@ export const useUserStore = defineStore('user', {
                 },
             ],
             showAction: true,
+            updateBtn: true,
             deleteBtn: true,
+            updateUrl: '/admin/user/store',
             apiRoutes: {
                 index: '/api/admin/users',
                 create: '/api/admin/users',
+                update: '/api/admin/users',
                 delete: '/api/admin/users',
             }
         }
@@ -226,6 +229,8 @@ export const useUserStore = defineStore('user', {
                 columns: state.columns,
                 showAction: state.showAction,
                 deleteBtn: state.deleteBtn,
+                updateBtn: state.updateBtn,
+                updateUrl: state.updateUrl,
             }
         },
         getBreadcrumb(state) {
@@ -308,11 +313,46 @@ export const useUserStore = defineStore('user', {
         setAvatar(payload) {
             this.singleData.avatar = payload
         },
+        setSingleData (data) {
+            this.singleData = {
+                name: data.name,
+                email: data.email,
+                password: '',
+                avatar: '',
+                dob: data.dob,
+                nid_number: data.nid_number,
+                education: data.education,
+                profession: data.profession,
+                income: data.income,
+
+                parent_is_alive: !!data.parent_is_alive,
+                parent_available: !!data.parent_available ? 'yes' : 'no',
+                parent_profession: data.parent_profession ,
+
+                spouse_is_alive: !!data.spouse_is_alive,
+                spouse_name: data.spouse_name,
+                spouse_dob: data.spouse_dob,
+                spouse_nid_number: data.spouse_nid_number,
+                spouse_income: data.spouse_income,
+                spouse_profession: data.spouse_profession,
+                spouse_education: data.spouse_education,
+
+                no_of_child: data.no_of_child,
+                children_profession: data.children_profession,
+
+                own_house: !!data.own_house,
+                total_land: data.total_land,
+                house_made_of: data.house_made_of,
+
+                other_earning_member: !!data.other_earning_member,
+                other_member_have_bank_account: !!data.other_member_have_bank_account,
+            };
+        },
         setBradCrumb(type = 'index') {
             this.breadCrumb.splice(1)
             this.breadCrumb.push(
                 {
-                    title: 'User',
+                    title: 'Loanee',
                     disabled: type === 'index',
                     href: type === 'index' ? '' : '/admin/user',
                 }
@@ -320,7 +360,7 @@ export const useUserStore = defineStore('user', {
             if (type !== 'index') {
                 this.breadCrumb.push(
                     {
-                        title: type === 'create' ? 'Create Role' : type === 'update' ? 'Update User' : 'View User',
+                        title: type === 'create' ? 'Create Loanee' : type === 'update' ? 'Update Loanee' : 'View Loanee',
                         disabled: true,
                         href: '',
                     }

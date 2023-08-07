@@ -2,7 +2,7 @@
     <v-card-text>
         <v-checkbox
             v-model="singleData.spouse_is_alive"
-            label="Alive"
+            label="Is Alive?"
             @change="checkAlive"
             :error="!!errors.spouse_is_alive"
             :error-messages="errors.spouse_is_alive"
@@ -59,30 +59,32 @@
     </v-card-text>
 </template>
 <script>
-import {mapState, mapWritableState} from "pinia";
-import {useUserStore} from "../../stores/user";
+import { mapState, mapWritableState } from "pinia";
+import { useUserStore } from "../../stores/user";
 
 export default {
     name: "user_spouse",
     computed: {
         ...mapState(useUserStore, {
-            getEducation: 'getEducation', getProfession: 'getProfession'
+            getEducation: "getEducation",
+            getProfession: "getProfession",
         }),
         ...mapWritableState(useUserStore, {
-            singleData: 'singleData', errors: 'errors',
+            singleData: "singleData",
+            errors: "errors",
         }),
     },
     methods: {
         checkAlive() {
             if (!this.singleData.spouse_is_alive) {
-                this.singleData.spouse_name = '';
-                this.singleData.spouse_dob = '';
-                this.singleData.spouse_nid_number = '';
+                this.singleData.spouse_name = "";
+                this.singleData.spouse_dob = "";
+                this.singleData.spouse_nid_number = "";
                 this.singleData.spouse_income = 0;
-                this.singleData.spouse_profession = '';
-                this.singleData.spouse_education = '';
+                this.singleData.spouse_profession = "";
+                this.singleData.spouse_education = "";
             }
-        }
-    }
-}
+        },
+    },
+};
 </script>

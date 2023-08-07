@@ -2,7 +2,7 @@
     <v-card-text>
         <v-checkbox
             v-model="singleData.own_house"
-            label="Do you stay own home"
+            label="Do you stay own home ?"
             :error="!!errors.own_house"
             :error-messages="errors.own_house"
         ></v-checkbox>
@@ -20,24 +20,25 @@
             :error-messages="errors.house_made_of"
             item-title="name"
             item-value="value"
-            label="House is made of"
+            label="House is made of?"
             variant="solo"
         ></v-select>
     </v-card-text>
 </template>
 <script>
-import {mapState, mapWritableState} from "pinia";
-import {useUserStore} from "../../stores/user";
+import { mapState, mapWritableState } from "pinia";
+import { useUserStore } from "../../stores/user";
 
 export default {
     name: "user_residence",
     computed: {
         ...mapState(useUserStore, {
-            getMaterial: 'getMaterial'
+            getMaterial: "getMaterial",
         }),
         ...mapWritableState(useUserStore, {
-            singleData: 'singleData', errors: 'errors',
+            singleData: "singleData",
+            errors: "errors",
         }),
     },
-}
+};
 </script>

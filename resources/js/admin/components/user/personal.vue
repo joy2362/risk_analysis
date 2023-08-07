@@ -47,7 +47,7 @@
             v-model="singleData.profession"
             :error="!!errors.profession"
             :error-messages="errors.profession"
-            :items="getProfession"
+            :items="getMemberProfession"
             item-title="name"
             item-value="value"
             label="Profession"
@@ -74,27 +74,28 @@
     </v-card-text>
 </template>
 <script>
-import {mapActions, mapState, mapWritableState} from "pinia";
-import {useUserStore} from "../../stores/user";
+import { mapActions, mapState, mapWritableState } from "pinia";
+import { useUserStore } from "../../stores/user";
 
 export default {
     name: "user_personal",
     computed: {
         ...mapState(useUserStore, {
-            getEducation: 'getEducation', getProfession: 'getProfession'
+            getEducation: "getEducation",
+            getMemberProfession: "getMemberProfession",
         }),
         ...mapWritableState(useUserStore, {
-            singleData: 'singleData', errors: 'errors',
+            singleData: "singleData",
+            errors: "errors",
         }),
     },
     methods: {
         ...mapActions(useUserStore, {
-            setAvatar: 'setAvatar',
+            setAvatar: "setAvatar",
         }),
         onSelect(event) {
-            this.setAvatar(event.target.files[0])
+            this.setAvatar(event.target.files[0]);
         },
-    }
-
-}
+    },
+};
 </script>

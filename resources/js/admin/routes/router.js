@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     {
@@ -120,7 +120,7 @@ const routes = [
                 path: 'admin/user',
                 name: 'admin.user.index',
                 meta: {
-                    title: 'User',
+                    title: 'Loanee',
                     requireAuth: true
                 },
                 component: () => import(/* webpackChunkName: "admin.user.index" */'../views/user/index.vue')
@@ -129,7 +129,16 @@ const routes = [
                 path: 'admin/user/store',
                 name: 'admin.user.store',
                 meta: {
-                    title: 'Create User',
+                    title: 'Create Loanee',
+                    requireAuth: true
+                },
+                component: () => import(/* webpackChunkName: "admin.user.store" */'../views/user/create.vue')
+            },
+            {
+                path: 'admin/user/update/:id',
+                name: 'admin.user.update',
+                meta: {
+                    title: 'Update Loanee',
                     requireAuth: true
                 },
                 component: () => import(/* webpackChunkName: "admin.user.store" */'../views/user/create.vue')

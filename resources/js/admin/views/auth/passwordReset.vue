@@ -10,9 +10,9 @@
                 class="card-login"
                 elevation="2"
             >
-                <v-card-title class="d-flex justify-center">
-                    <img :src="getLogo" alt="Logo" class="login-logo">
-                </v-card-title>
+<!--                <v-card-title class="d-flex justify-center">-->
+<!--                    <img :src="getLogo" alt="Logo" class="login-logo">-->
+<!--                </v-card-title>-->
 
                 <v-form
                     class="form-width"

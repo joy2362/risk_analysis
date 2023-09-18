@@ -4,6 +4,7 @@ namespace App\Services\Backend;
 
 use App\Enums\ChildProfessionEnum;
 use App\Enums\HomeMaterialEnum;
+use App\Enums\LoanUserForEnum;
 use App\Enums\MemberProfessionEnum;
 use App\Enums\ParentProfessionEnum;
 use App\Enums\UserEducationEnum;
@@ -73,15 +74,15 @@ class UserService
     public function show($id): Collection
     {
         $user = User::find($id);
-        return $this->success(['user' => $user ]);
+        return $this->success(['user' => $user]);
     }
 
     public function update(Request $request, $id): Collection
     {
         try {
-            $userData = $request->except(['password', 'avatar' , '_method']);
-         
-            if(!empty($request->password)){
+            $userData = $request->except(['password', 'avatar', '_method']);
+
+            if (!empty($request->password)) {
                 $userData['password'] = Hash::make($request->password);
             }
 
@@ -97,7 +98,7 @@ class UserService
             $userData['own_house'] = (boolean)$request->own_house;
             $userData['parent_available'] = (boolean)$request->parent_available;
 
-            User::where('id',$id)->update($userData);
+            User::where('id', $id)->update($userData);
             $user = User::find($id);
             $this->calculateScore($user);
             $this->collection = $this->success(['message' => 'User updated']);
@@ -175,38 +176,50 @@ class UserService
         $total = 0;
 
         if ($user->spouse_income == 0) {
-            $total += 3;
+            $total += 1;
         } elseif ($user->spouse_income > 0 && $user->spouse_income < 5000) {
-            $total += 4;
+            $total += 1;
         } elseif ($user->spouse_income >= 5000 && $user->spouse_income < 10000) {
-            $total += 5;
+            $total += 2;
         } elseif ($user->spouse_income >= 10001 && $user->spouse_income < 20000) {
-            $total += 6;
+            $total += 3;
         } elseif ($user->spouse_income >= 20001 && $user->spouse_income < 30000) {
-            $total += 7;
+            $total += 4;
         } elseif ($user->spouse_income >= 30001 && $user->spouse_income < 40000) {
-            $total += 8;
+            $total += 5;
         } else {
-            $total += 10;
+            $total += 6;
         }
 
         match ($user->spouse_profession) {
-            UserProfessionEnum::Business->value => $total += 9,
-            UserProfessionEnum::RickshawPuller->value => $total += 7,
-            UserProfessionEnum::WantedToGoAbroad->value => $total += 3,
-            UserProfessionEnum::Unemployed->value, UserProfessionEnum::JobSeeker->value => $total += 5,
-            UserProfessionEnum::PrivateJobHolder->value, UserProfessionEnum::Farming->value => $total += 8,
-            UserProfessionEnum::GarmentsSector->value, UserProfessionEnum::Driver->value => $total += 6,
+            UserProfessionEnum::RickshawPuller->value, UserProfessionEnum::Driver->value, UserProfessionEnum::Farming->value => $total += 4,
+            UserProfessionEnum::Unemployed->value, UserProfessionEnum::JobSeeker->value => $total += 2,
+            UserProfessionEnum::PrivateJobHolder->value, UserProfessionEnum::GarmentsSector->value => $total += 3,
+            UserProfessionEnum::Business->value => $total += 5,
+            UserProfessionEnum::WantedToGoAbroad->value => $total += 1,
             default => $total += 0,
         };
 
         match ($user->spouse_education) {
-            UserEducationEnum::NoEducation->value, UserEducationEnum::SSCPass->value => $total += 7,
-            UserEducationEnum::PassPSC->value => $total += 6,
-            UserEducationEnum::PassJSC->value => $total += 5,
-            UserEducationEnum::HSCPass->value => $total += 8,
-            UserEducationEnum::Graduation->value => $total += 9,
-            UserEducationEnum::PostGraduation->value => $total += 10,
+            UserEducationEnum::NoEducation->value, UserEducationEnum::Graduation->value => $total += 4,
+            UserEducationEnum::PassPSC->value, UserEducationEnum::PassJSC->value, UserEducationEnum::SSCPass->value, UserEducationEnum::HSCPass->value => $total += 3,
+            UserEducationEnum::PostGraduation->value => $total += 5,
+            default => $total += 0,
+        };
+
+        match ($user->other_loan) {
+            0 => $total += 5,
+            1 => $total += 3,
+            2 => $total += 1,
+            default => $total += 0,
+        };
+
+        match ($user->use_of_loan) {
+            LoanUserForEnum::COW->value, LoanUserForEnum::CAR->value => $total += 4,
+            LoanUserForEnum::BUSINESS->value => $total += 5,
+            LoanUserForEnum::PLOTLY_FARM->value, LoanUserForEnum::AGRICULTURE->value => $total += 3,
+            LoanUserForEnum::NOT_SURE->value => $total += 1,
+            LoanUserForEnum::OTHER->value => $total += 2,
             default => $total += 0,
         };
 

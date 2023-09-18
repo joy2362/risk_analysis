@@ -2,6 +2,9 @@
   <v-app>
     <GlobalLoading/>
     <div class="main-bg">
+        <h1>
+            asdf
+        </h1>
       <v-card
           class="card-login"
           elevation="2"

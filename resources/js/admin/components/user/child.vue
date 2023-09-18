@@ -16,7 +16,7 @@
             :error-messages="errors.children_profession"
             item-title="name"
             item-value="value"
-            label="Profession"
+            label="Profession of older child"
             variant="solo"
         ></v-select>
     </v-card-text>

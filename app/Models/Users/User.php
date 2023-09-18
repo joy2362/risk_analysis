@@ -40,6 +40,8 @@ class User extends Authenticatable
         "spouse_income",
         "spouse_profession",
         "spouse_education",
+        "other_loan",
+        "use_of_loan",
         "no_of_child",
         "children_profession",
         "own_house",

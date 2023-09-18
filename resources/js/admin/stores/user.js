@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 
 export const useUserStore = defineStore('user', {
     state: () => {
@@ -17,11 +17,6 @@ export const useUserStore = defineStore('user', {
                     sortable: true,
                 },
                 {
-                    label: 'Score',
-                    field: 'score',
-                    sortable: true,
-                },
-                {
                     label: 'Nid',
                     field: 'nid_number',
                     sortable: true,
@@ -34,6 +29,11 @@ export const useUserStore = defineStore('user', {
                 {
                     label: 'Status',
                     field: 'status',
+                    sortable: true,
+                },
+                {
+                    label: 'Score',
+                    field: 'score',
                     sortable: true,
                 },
             ],
@@ -64,28 +64,30 @@ export const useUserStore = defineStore('user', {
                 avatar: '',
                 dob: '',
                 nid_number: '',
-                education: '',
-                profession: '',
+                education: 'no education',
+                profession: 'home maker',
                 income: 0,
 
                 parent_is_alive: true,
-                parent_available: 'yes',
-                parent_profession: '',
+                parent_available: 1,
+                parent_profession: 'farming',
 
                 spouse_is_alive: true,
                 spouse_name: '',
                 spouse_dob: '',
                 spouse_nid_number: '',
                 spouse_income: 0,
-                spouse_profession: '',
-                spouse_education: '',
+                spouse_profession: 'rickshaw puller',
+                spouse_education: 'no education',
+                other_loan: 0,
+                use_of_loan: 'cow',
 
-                no_of_child: 0,
-                children_profession: '',
+                no_of_child: 1,
+                children_profession: 'age less than 5 years',
 
                 own_house: true,
                 total_land: 0,
-                house_made_of: '',
+                house_made_of: 'only tin',
 
                 other_earning_member: true,
                 other_member_have_bank_account: true,
@@ -209,6 +211,45 @@ export const useUserStore = defineStore('user', {
                     name: 'Job Holder', value: "job Holder"
                 },
             ],
+            parentAvailable: [
+                {
+                    name: 'They stay Combine', value: 1
+                },
+                {
+                    name: 'They stay Separate', value: 0
+                },
+            ],
+            loanUsedFor: [
+                {
+                    name: 'Cow',
+                    value: 'cow',
+                },
+                {
+                    name: 'Car',
+                    value: 'car',
+                },
+                {
+                    name: 'Not Sure',
+                    value: 'not sure',
+                },
+                {
+                    name: 'Other',
+                    value: 'other',
+                },
+                {
+                    name: 'Agriculture',
+                    value: 'agriculture',
+                },
+                {
+                    name: 'Plotly farm',
+                    value: 'plotly farm',
+                },
+                {
+                    name: "Business",
+                    value: "business"
+                }
+
+            ],
             showAction: true,
             updateBtn: true,
             deleteBtn: true,
@@ -265,6 +306,12 @@ export const useUserStore = defineStore('user', {
         },
         getChildProfession(state) {
             return state.childProfession
+        },
+        getParentAvailable(state) {
+            return state.parentAvailable
+        },
+        getLoanUsedFor(state) {
+            return state.loanUsedFor
         }
     },
     actions: {
@@ -313,7 +360,7 @@ export const useUserStore = defineStore('user', {
         setAvatar(payload) {
             this.singleData.avatar = payload
         },
-        setSingleData (data) {
+        setSingleData(data) {
             this.singleData = {
                 name: data.name,
                 email: data.email,
@@ -327,7 +374,7 @@ export const useUserStore = defineStore('user', {
 
                 parent_is_alive: !!data.parent_is_alive,
                 parent_available: !!data.parent_available ? 'yes' : 'no',
-                parent_profession: data.parent_profession ,
+                parent_profession: data.parent_profession,
 
                 spouse_is_alive: !!data.spouse_is_alive,
                 spouse_name: data.spouse_name,
@@ -335,7 +382,8 @@ export const useUserStore = defineStore('user', {
                 spouse_nid_number: data.spouse_nid_number,
                 spouse_income: data.spouse_income,
                 spouse_profession: data.spouse_profession,
-                spouse_education: data.spouse_education,
+                other_loan: data.other_loan,
+                use_of_loan: data.use_of_loan,
 
                 no_of_child: data.no_of_child,
                 children_profession: data.children_profession,

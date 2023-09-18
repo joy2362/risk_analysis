@@ -55,6 +55,24 @@
                 :error="!!errors.spouse_income"
                 :error-messages="errors.spouse_income"
             ></v-text-field>
+            <v-select
+                v-model="singleData.use_of_loan"
+                :items="getLoanUsedFor"
+                item-title="name"
+                item-value="value"
+                label="Use of loan"
+                variant="solo"
+                :error="!!errors.use_of_loan"
+                :error-messages="errors.use_of_loan"
+            ></v-select>
+
+            <v-text-field
+                v-model="singleData.other_loan"
+                label="Other Loan"
+                type="number"
+                :error="!!errors.other_loan"
+                :error-messages="errors.other_loan"
+            ></v-text-field>
         </div>
     </v-card-text>
 </template>
@@ -68,6 +86,7 @@ export default {
         ...mapState(useUserStore, {
             getEducation: "getEducation",
             getProfession: "getProfession",
+            getLoanUsedFor: "getLoanUsedFor",
         }),
         ...mapWritableState(useUserStore, {
             singleData: "singleData",

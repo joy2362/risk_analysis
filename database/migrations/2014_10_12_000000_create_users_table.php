@@ -38,6 +38,9 @@ return new class () extends Migration {
             $table->string('spouse_profession')->nullable();
             $table->string('spouse_education')->nullable();
 
+            $table->string('other_loan')->nullable();
+            $table->string('use_of_loan')->nullable();
+
             $table->unsignedInteger('no_of_child')->default(0);
             $table->string('children_profession')->nullable();
 

@@ -2,25 +2,28 @@
     <v-card-text>
         <v-checkbox
             v-model="singleData.parent_is_alive"
-            label="Is Alive?"
-            @change="checkAlive"
             :error="!!errors.parent_is_alive"
             :error-messages="errors.parent_is_alive"
+            label="Is Alive?"
+            @change="checkAlive"
         ></v-checkbox>
 
         <div v-if="singleData.parent_is_alive">
             <v-select
                 v-model="singleData.parent_available"
-                label="Are they available?"
                 :error="!!errors.parent_available"
                 :error-messages="errors.parent_available"
-                :items="['yes', 'no']"
+                :items="getParentAvailable"
+                item-title="name"
+                item-value="value"
+                label="Are they available?"
+                variant="solo"
             ></v-select>
             <v-select
                 v-model="singleData.parent_profession"
-                :items="getParentProfession"
                 :error="!!errors.parent_profession"
                 :error-messages="errors.parent_profession"
+                :items="getParentProfession"
                 item-title="name"
                 item-value="value"
                 label="Profession"
@@ -30,14 +33,14 @@
     </v-card-text>
 </template>
 <script>
-import { mapState, mapWritableState } from "pinia";
-import { useUserStore } from "../../stores/user";
+import {mapState, mapWritableState} from "pinia";
+import {useUserStore} from "../../stores/user";
 
 export default {
     name: "user_parent",
     computed: {
         ...mapState(useUserStore, {
-            getParentProfession: "getParentProfession",
+            getParentProfession: "getParentProfession", getParentAvailable: 'getParentAvailable'
         }),
         ...mapWritableState(useUserStore, {
             singleData: "singleData",

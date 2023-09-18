@@ -10,8 +10,6 @@ export const getSingleUser = async (_this, id) => {
     const res = await _this.$get(`${_this.getApiRoutes.update}/${id}`)
     _this.setSingleData(res.data?.success ? res.data.user : {})
   }
-  
-
 
 export const createUser = async (_this) => {
     _this.setGlobalLoading(true)
@@ -49,7 +47,7 @@ export const updateUser = async (_this, id) => {
 
     const url = `${_this.getApiRoutes.update}/${id}`
 
-    
+
     const payload = new FormData();
 
     payload.append('_method', 'PUT')
@@ -58,9 +56,9 @@ export const updateUser = async (_this, id) => {
     Object.entries(_this.getSingleData).forEach(([key, value]) => {
         payload.append(key, value);
     });
-  
+
     const res = await _this.$post(url, payload)
-  
+
     if (res.data?.success) {
         _this.$success(res.data.message)
          _this.resetSingleData()

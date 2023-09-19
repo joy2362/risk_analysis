@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')
             Route::post('/password', 'changePassword');
             Route::post('/general', 'changeGeneral');
             Route::post('/image', 'changeProfileImage');
+            Route::get('/dashboard', 'dashboard');
         });
         /*
         |--------------------------------------------------------------------------

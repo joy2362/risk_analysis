@@ -143,6 +143,15 @@ const routes = [
                 },
                 component: () => import(/* webpackChunkName: "admin.user.store" */'../views/user/create.vue')
             },
+            {
+                path: 'admin/user/show/:id',
+                name: 'admin.user.show',
+                meta: {
+                    title: 'View Loanee',
+                    requireAuth: true
+                },
+                component: () => import(/* webpackChunkName: "admin.user.show" */'../views/user/show.vue')
+            },
         ],
     },
 ]

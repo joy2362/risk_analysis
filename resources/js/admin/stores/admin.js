@@ -3,6 +3,7 @@ import {defineStore} from 'pinia'
 export const useAdminStore = defineStore('admin', {
     state: () => {
         return {
+            dashboard: [],
             data: [],
             total: 0,
             columns: [
@@ -35,6 +36,12 @@ export const useAdminStore = defineStore('admin', {
                     to: '/admin/user/admin',
                     icon: 'mdi-eye'
                 },
+
+                Dashboard: {
+                    name: 'Dashboard',
+                    to: '/',
+                    icon: 'mdi-eye'
+                },
             },
             errors: [],
             singleData: {
@@ -49,6 +56,7 @@ export const useAdminStore = defineStore('admin', {
                 index: '/api/admin/admins',
                 create: '/api/admin/admins',
                 delete: '/api/admin/admins',
+                dashboard: '/api/admin/profile/dashboard',
             }
         }
     },
@@ -61,6 +69,10 @@ export const useAdminStore = defineStore('admin', {
                 showAction: state.showAction,
                 deleteBtn: state.deleteBtn,
             }
+        },
+
+        getDashboardDatas(state){
+            return state.dashboard
         },
         getBreadcrumb(state) {
             return state.breadCrumb
@@ -76,6 +88,9 @@ export const useAdminStore = defineStore('admin', {
         },
     },
     actions: {
+        setDashboardData(data){
+            this.dashboard = data
+        },
         setData(role) {
             this.data = role.data
             this.total = role.total

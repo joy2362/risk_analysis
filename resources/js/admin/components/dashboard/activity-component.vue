@@ -22,7 +22,10 @@
 </template>
 
 <script>
-export default {}
+export default {
+    name: "activity",
+
+}
 </script>
 
 <style>

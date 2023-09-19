@@ -78,7 +78,7 @@
                                     </v-list-item-title>
                                 </v-list-item>
                                 <v-list-item
-                                    v-if="show"
+                                    v-if="showBtn"
                                     :to="generateShowLink(row.id)"
                                     value="show"
                                 >
@@ -209,11 +209,11 @@ export default {
             type: Boolean,
             required: false,
         },
-        deleteUrl: {
+        show: {
             type: String,
             required: false,
         },
-        show: {
+        showBtn: {
             type: Boolean,
             required: false,
         },

@@ -6,6 +6,11 @@ export const getAdmins = async (_this, payload) => {
     } : {})
 }
 
+export const getDashboardData = async (_this) => {
+    const res = await _this.$get(_this.getApiRoutes.dashboard)
+    _this.setDashboardData(res.data?.success ? res.data.dashboard : {})
+}
+
 export const createAdmin = async (_this) => {
     _this.setGlobalLoading(true)
     const formData = new FormData()

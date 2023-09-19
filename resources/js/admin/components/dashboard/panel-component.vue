@@ -12,7 +12,9 @@
 
 <script>
 export default {
-  props: ['icon', 'title', 'value']
+    name: "panel_component",
+
+    props: ['icon', 'title', 'value']
 }
 </script>
 

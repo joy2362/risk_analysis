@@ -60,7 +60,9 @@
 </template>
 
 <script>
-export default {}
+export default {
+    name: "popular_product"
+}
 </script>
 
 <style>

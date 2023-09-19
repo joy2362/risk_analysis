@@ -9,6 +9,7 @@
             :columns="getData.columns"
             :updateBtn="getData.updateBtn"
             :deleteBtn="getData.deleteBtn"
+            :showBtn="getData.showBtn"
             :required_action="getData.showAction"
             :rows="getData.data"
             :deleteUrl="getApiRoutes.delete"

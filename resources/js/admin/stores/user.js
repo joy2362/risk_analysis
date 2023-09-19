@@ -67,6 +67,8 @@ export const useUserStore = defineStore('user', {
                 education: 'no education',
                 profession: 'home maker',
                 income: 0,
+                score: '',
+                status: '',
 
                 parent_is_alive: true,
                 parent_available: 1,
@@ -253,6 +255,7 @@ export const useUserStore = defineStore('user', {
             showAction: true,
             updateBtn: true,
             deleteBtn: true,
+            showBtn: true,
             updateUrl: '/admin/user/store',
             apiRoutes: {
                 index: '/api/admin/users',
@@ -272,6 +275,7 @@ export const useUserStore = defineStore('user', {
                 deleteBtn: state.deleteBtn,
                 updateBtn: state.updateBtn,
                 updateUrl: state.updateUrl,
+                showBtn: state.showBtn,
             }
         },
         getBreadcrumb(state) {
@@ -371,6 +375,8 @@ export const useUserStore = defineStore('user', {
                 education: data.education,
                 profession: data.profession,
                 income: data.income,
+                status: data.status,
+                score: data.score,
 
                 parent_is_alive: !!data.parent_is_alive,
                 parent_available: !!data.parent_available ? 'yes' : 'no',
@@ -381,6 +387,7 @@ export const useUserStore = defineStore('user', {
                 spouse_dob: data.spouse_dob,
                 spouse_nid_number: data.spouse_nid_number,
                 spouse_income: data.spouse_income,
+                spouse_education: data.spouse_education,
                 spouse_profession: data.spouse_profession,
                 other_loan: data.other_loan,
                 use_of_loan: data.use_of_loan,

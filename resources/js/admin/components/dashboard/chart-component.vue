@@ -22,7 +22,9 @@ import * as chartConfig from './chart-data-config'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export default {
-  components: {
+    name: "chart",
+
+    components: {
     Bar
   },
   data () {

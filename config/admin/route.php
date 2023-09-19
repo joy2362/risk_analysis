@@ -65,6 +65,10 @@ return [
             'name' => null,
         ],
         [
+            'url' => '/user/show/{id}',
+            'name' => null,
+        ],
+        [
             'url' => '/password-reset/{email}/{token}',
             'name' => 'admin.password.reset',
         ]

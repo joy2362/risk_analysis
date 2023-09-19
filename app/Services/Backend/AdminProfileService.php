@@ -3,6 +3,7 @@
 namespace App\Services\Backend;
 
 use App\Models\Users\Admin;
+use App\Models\Users\User;
 use App\Traits\Backend\ServiceReturnCollection;
 use Illuminate\Support\{Collection, Facades\Auth, Facades\Hash};
 use Exception;
@@ -66,6 +67,33 @@ class AdminProfileService
             $this->collection = $this->failed(['error' => $ex->getMessage()]);
         }
         return $this->collection;
+    }
+
+    public function dashboard(Request $request)
+    {
+        $totalAdmin = Admin::get()->count();
+        $totalUser = User::get()->count();
+
+        $acceptedUser = User::where('status', 'Accept')->get()->count();
+        $conditionallyAcceptedUser = User::where('status', 'Conditionally accept')->get()->count();
+        $rejectedUser = User::where('status', 'Reject')->get()->count();
+
+        $acceptedUserData = User::where('status', 'Accept')->take(5)->get(['name','score']);
+        $conditionallyAcceptedUserData = User::where('status', 'Conditionally accept')->take(5)->get(['name','score']);
+        $rejectedUserData = User::where('status', 'Reject')->take(5)->get(['name','score']);
+
+        return $this->success([
+            'dashboard' => [
+                'totalAdmin' => $totalAdmin ?? 0,
+                'totalUser' => $totalUser ?? 0,
+                'acceptedUser' => $acceptedUser ?? 0,
+                'rejectedUser' => $rejectedUser ?? 0,
+                'conditionallyAcceptedUser' => $conditionallyAcceptedUser ?? 0,
+                'acceptedUserData' => $acceptedUserData ?? [],
+                'conditionallyAcceptedUserData' => $conditionallyAcceptedUserData ?? [],
+                'rejectedUserData' => $rejectedUserData ?? [],
+            ]
+        ]);
     }
 
     /*

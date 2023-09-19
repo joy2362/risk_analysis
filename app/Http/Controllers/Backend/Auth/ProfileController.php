@@ -35,4 +35,9 @@ class ProfileController extends Controller
     {
         return apiResponse($this->service->changeProfileImage($request));
     }
+
+    public function dashboard(Request $request): JsonResponse
+    {
+        return apiResponse($this->service->dashboard($request));
+    }
 }
